@@ -3,7 +3,7 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title("CoCログ集計")
+st.title("ログ集計アプリ（致命的失敗独立・技能名重複排除版）")
 
 # テキスト入力
 log_text = st.text_area("ログを貼り付けてください", height=400)
@@ -31,13 +31,11 @@ if st.button("集計する") and log_text.strip():
         match_skill = re.search(r"【(.*?)】", line)
         skill_name = match_skill.group(1) if match_skill else "（技能名なし）"
         
-        # 判定結果の抽出（行末）
+        # 判定結果の抽出（末尾が完全一致するか確認）
         for rtype in result_types:
-            if line.endswith(rtype):
-                # 件数は重複を含めてカウント
+            if line.endswith(rtype) and (rtype != "失敗" or line.endswith("失敗") and not line.endswith("致命的失敗")):
                 players_counts[player_name][rtype].append(1)
                 total_counts[player_name] += 1
-                # 技能名は重複排除
                 players_skills[player_name][rtype].add(skill_name)
                 break
 
