@@ -3,7 +3,7 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title("ログ集計アプリ（表形式改良版）")
+st.title("CoCログ集計")
 
 # テキスト入力
 log_text = st.text_area("ログを貼り付けてください", height=400)
@@ -12,8 +12,9 @@ log_text = st.text_area("ログを貼り付けてください", height=400)
 result_types = ["決定的成功/スペシャル", "スペシャル", "成功", "失敗", "致命的失敗"]
 
 if st.button("集計する") and log_text.strip():
-    # 集計用の辞書（技能名を set で重複排除）
-    players = defaultdict(lambda: {rtype: set() for rtype in result_types})
+    # 件数は重複を許可するためリスト、技能名は重複排除のため set
+    players_counts = defaultdict(lambda: {rtype: [] for rtype in result_types})
+    players_skills = defaultdict(lambda: {rtype: set() for rtype in result_types})
     total_counts = defaultdict(int)
     
     # ログ解析
@@ -33,22 +34,25 @@ if st.button("集計する") and log_text.strip():
         # 判定結果の抽出（行末）
         for rtype in result_types:
             if line.endswith(rtype):
-                players[player_name][rtype].add(skill_name)
+                # 件数は重複を含めてカウント
+                players_counts[player_name][rtype].append(1)
                 total_counts[player_name] += 1
+                # 技能名は重複排除
+                players_skills[player_name][rtype].add(skill_name)
                 break
 
     # 集計表示
-    for player, data in players.items():
+    for player in players_counts:
         st.subheader(f"プレイヤー: {player}")
         st.write(f"**判定総数:** {total_counts[player]}")
 
-        # 件数まとめ
-        summary = {rtype: len(skills) for rtype, skills in data.items()}
+        # 件数まとめ（重複を含む）
+        summary = {rtype: len(players_counts[player][rtype]) for rtype in result_types}
         df_summary = pd.DataFrame([summary], index=["件数"])
         st.table(df_summary)
         
-        # 技能名まとめ
+        # 技能名まとめ（重複排除）
         st.write("**判定結果ごとの技能名（重複なし）**")
-        skill_data = {rtype: ', '.join(skills) if skills else "なし" for rtype, skills in data.items()}
+        skill_data = {rtype: ', '.join(players_skills[player][rtype]) if players_skills[player][rtype] else "なし" for rtype in result_types}
         df_skills = pd.DataFrame([skill_data], index=["技能名"])
         st.table(df_skills)
