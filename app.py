@@ -3,7 +3,7 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title("ログ集計アプリ（致命的失敗独立・技能名重複排除版）")
+st.title("CoCログ集計")
 
 # テキスト入力
 log_text = st.text_area("ログを貼り付けてください", height=400)
