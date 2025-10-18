@@ -3,13 +3,13 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title("ログ集計アプリ（致命的失敗独立・技能名重複排除版）")
+st.title("ログ集計アプリ（CoC7版）")
 
 # テキスト入力
 log_text = st.text_area("ログを貼り付けてください", height=400)
 
 # 判定結果の種類
-result_types = ["決定的成功/スペシャル", "スペシャル", "成功", "失敗", "致命的失敗"]
+result_types = ["＞ クリティカル", "＞ イクストリーム成功", "＞ ハード成功", "＞ レギュラー成功", "＞ 成功", "＞ 失敗", "＞ ファンブル"]
 
 if st.button("集計する") and log_text.strip():
     # 件数は重複を許可するためリスト、技能名は重複排除のため set
@@ -54,3 +54,4 @@ if st.button("集計する") and log_text.strip():
         skill_data = {rtype: ', '.join(players_skills[player][rtype]) if players_skills[player][rtype] else "なし" for rtype in result_types}
         df_skills = pd.DataFrame([skill_data], index=["技能名"])
         st.table(df_skills)
+
