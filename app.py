@@ -6,7 +6,7 @@ from collections import defaultdict
 st.title("CoCログ集計")
 
 # テキスト入力
-log_text = st.text_area("7版用：https://conutercoc7py-amnd7qebfctz5s6atkuapps.streamlit.app/", height=400)
+st.write("7版用：https://conutercoc7py-amnd7qebfctz5s6atkuapps.streamlit.app/")
 log_text = st.text_area("ログを貼り付けてください", height=400)
 
 # 判定結果の種類
