@@ -6,6 +6,7 @@ from collections import defaultdict
 st.title("ログ集計アプリ（CoC7版）")
 
 # テキスト入力
+log_text = st.text_area("6版用：https://coc-counter.streamlit.app/", height=400)
 log_text = st.text_area("ログを貼り付けてください", height=400)
 
 # 判定結果の種類
@@ -54,4 +55,5 @@ if st.button("集計する") and log_text.strip():
         skill_data = {rtype: ', '.join(players_skills[player][rtype]) if players_skills[player][rtype] else "なし" for rtype in result_types}
         df_skills = pd.DataFrame([skill_data], index=["技能名"])
         st.table(df_skills)
+
 
