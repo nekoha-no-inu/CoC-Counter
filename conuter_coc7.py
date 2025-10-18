@@ -40,18 +40,15 @@ if st.button("集計する") and log_text.strip():
                 players_skills[player_name][rtype].add(skill_name)
                 break
 
+
     # 集計表示
     for player in players_counts:
         st.subheader(f"プレイヤー: {player}")
         st.write(f"**判定総数:** {total_counts[player]}")
-        
-        # 件数と確率
-        summary_data = {}
-        for rtype in result_types:
-            count = players_counts[player][rtype]
-            prob = (count / total_counts[player] * 100) if total_counts[player] > 0 else 0
-            summary_data[rtype] = f"{count} ({prob:.1f}%)"
-        df_summary = pd.DataFrame([summary_data], index=["件数（確率）"])
+
+        # 件数まとめ（重複を含む）
+        summary = {rtype: len(players_counts[player][rtype]) for rtype in result_types}
+        df_summary = pd.DataFrame([summary], index=["件数"])
         st.table(df_summary)
         
         # 技能名まとめ（重複排除）
@@ -59,6 +56,7 @@ if st.button("集計する") and log_text.strip():
         skill_data = {rtype: ', '.join(players_skills[player][rtype]) if players_skills[player][rtype] else "なし" for rtype in result_types}
         df_skills = pd.DataFrame([skill_data], index=["技能名"])
         st.table(df_skills)
+
 
 
 
