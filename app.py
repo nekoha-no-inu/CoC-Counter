@@ -3,7 +3,7 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title(ログ集計アプリ（CoC6版）)
+st.title("ログ集計アプリ（CoC6版）")
 
 # テキスト入力
 st.write("7版用：https://conutercoc7py-amnd7qebfctz5s6atkuapps.streamlit.app/")
