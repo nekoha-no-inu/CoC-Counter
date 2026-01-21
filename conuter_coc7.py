@@ -3,7 +3,7 @@ import pandas as pd
 import re
 from collections import defaultdict
 
-st.title("ログ集計アプリ（CoC7版・分類別対応）")
+st.title("ログ集計アプリ（CoC7版）")
 
 # テキスト入力
 st.write("6版用：https://coc-counter.streamlit.app/")
@@ -72,8 +72,8 @@ if st.button("集計する") and log_text.strip():
                 df_summary = pd.DataFrame([summary], index=["件数"])
                 st.table(df_summary)
 
-                # 技能名まとめ（重複排除）
-                st.write("**判定結果ごとの技能名（重複なし）**")
+                # 技能名まとめ
+                st.write("**判定結果ごとの技能名**")
                 skill_data = {
                     rtype: ', '.join(sorted(players_skills[player][cat][rtype])) if players_skills[player][cat][rtype] else "なし"
                     for rtype in result_types
@@ -91,3 +91,4 @@ if st.button("集計する") and log_text.strip():
                 combined_counts[rtype] += len(players_counts[player][cat][rtype])
         df_summary_all = pd.DataFrame([combined_counts], index=["件数"])
         st.table(df_summary_all)
+
