@@ -5,7 +5,7 @@ import ast
 import operator
 from collections import defaultdict
 
-st.title("ログ集計アプリ（CoC6版・分類別対応）")
+st.title("ログ集計アプリ（CoC6版）")
 
 # テキスト入力
 st.write("7版用：https://conutercoc7py-amnd7qebfctz5s6atkuapps.streamlit.app/")
