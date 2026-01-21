@@ -37,11 +37,57 @@ if st.button("集計する") and log_text.strip():
         skill_name = match_skill.group(1)
         
         # A: 【】の直前の数字
-        pre_skill_part = line[:match_skill.start()]
-        numbers = re.findall(r"\d+", pre_skill_part)
-        if not numbers:
-            continue
-        A = int(numbers[-1])
+import ast
+import operator
+
+# 安全な演算のみ許可する辞書
+allowed_ops = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Pow: operator.pow,
+    ast.USub: operator.neg
+}
+
+def safe_eval(expr):
+    """数字と + - * / // ** のみを安全に評価する"""
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.BinOp):
+            if type(node.op) not in allowed_ops:
+                raise ValueError("Unsupported operator")
+            return allowed_ops[type(node.op)](_eval(node.left), _eval(node.right))
+        elif isinstance(node, ast.UnaryOp):
+            if type(node.op) not in allowed_ops:
+                raise ValueError("Unsupported unary operator")
+            return allowed_ops[type(node.op)](_eval(node.operand))
+        elif isinstance(node, ast.Constant):  # Python 3.8+
+            if isinstance(node.value, (int, float)):
+                return node.value
+            raise ValueError("Unsupported constant")
+        elif isinstance(node, ast.Num):  # Python 3.7以前
+            return node.n
+        else:
+            raise ValueError("Unsupported expression type")
+
+    tree = ast.parse(expr, mode='eval')
+    return _eval(tree)
+
+# A: 【】の直前の数字または数式
+pre_skill_part = line[:match_skill.start()]
+# 末尾にある「数値や式」を抽出（例: "CCB<=7*5" → "7*5"）
+match_A = re.search(r"(\d[\d\+\-\*/ ]*\d?)\s*$", pre_skill_part)
+if not match_A:
+    continue
+
+expr = match_A.group(1).strip()
+try:
+    A = int(safe_eval(expr))
+except Exception:
+    continue
         
         # B: 最後の > と > の間の数字
         match_B_all = re.findall(r"＞\s*(\d+)\s*＞", line)
