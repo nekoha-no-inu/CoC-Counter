@@ -38,10 +38,10 @@ if st.button("集計する") and log_text.strip():
         
         # A: 【】の直前の数字
         pre_skill_part = line[:match_skill.start()]
-        match_A = re.findall(r"(\d+)", pre_skill_part)
-        if not match_A:
+        numbers = re.findall(r"\d+", pre_skill_part)
+        if not numbers:
             continue
-        A = int(match_A.group(1))
+        A = int(numbers[-1])
         
         # B: 最後の > と > の間の数字
         match_B_all = re.findall(r"＞\s*(\d+)\s*＞", line)
