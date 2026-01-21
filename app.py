@@ -38,7 +38,7 @@ if st.button("集計する") and log_text.strip():
         
         # A: 【】の直前の数字
         pre_skill_part = line[:match_skill.start()]
-        match_A = re.search(r"(\d+)", pre_skill_part)
+        match_A = re.findall(r"(\d+)", pre_skill_part)
         if not match_A:
             continue
         A = int(match_A.group(1))
